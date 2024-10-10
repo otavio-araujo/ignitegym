@@ -7,6 +7,7 @@ import {
 
 import { GluestackUIProvider, Text, Center } from "@gluestack-ui/themed"
 import { config } from "./config/gluestack-ui.config"
+import { Loading } from "@components/Loading"
 
 export default function App() {
   const [fontsLoaded] = useFonts({ Roboto_700Bold, Roboto_400Regular })
@@ -23,7 +24,7 @@ export default function App() {
           <Text color="white">Home</Text>
         </Center>
       ) : (
-        <View></View>
+        <Loading />
       )}
     </GluestackUIProvider>
   )
