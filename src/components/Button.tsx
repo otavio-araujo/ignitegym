@@ -8,25 +8,35 @@ import { isLoading } from "expo-font"
 
 type Props = ComponentProps<typeof GluestackButton> & {
   title: string
+  variant?: "solid" | "outline"
   isLoading?: boolean
 }
-export function Button({ title, isLoading = false, ...rest }: Props) {
+export function Button({
+  title,
+  variant = "solid",
+  isLoading = false,
+  ...rest
+}: Props) {
   return (
     <GluestackButton
       w="$full"
       h="$14"
-      bg="$green700"
-      borderWidth="$0"
+      bg={variant === "outline" ? "transparent" : "$green700"}
+      borderWidth={variant === "outline" ? "$1" : "$0"}
       borderColor="$green500"
       borderRadius="$sm"
-      $active-bg="$green500"
+      $active-bg={variant === "outline" ? "$gray500" : "$green500"}
       disabled={isLoading}
       {...rest}
     >
       {isLoading ? (
         <ButtonSpinner color="$white" />
       ) : (
-        <Text color="$white" fontSize="$sm" fontFamily="$heading">
+        <Text
+          color={variant === "outline" ? "$green500" : "$white"}
+          fontSize="$sm"
+          fontFamily="$heading"
+        >
           {title}
         </Text>
       )}
