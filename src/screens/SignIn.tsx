@@ -25,8 +25,12 @@ export function SignIn() {
       <VStack flex={1} px="$10" pb="$16">
         <Center gap="$2">
           <Heading color="$gray100">Acesse sua conta</Heading>
-          <Input placeholder="E-mail" />
-          <Input placeholder="Senha" />
+          <Input
+            placeholder="E-mail"
+            keyboardType="email-address"
+            autoCapitalize="none"
+          />
+          <Input placeholder="Senha" secureTextEntry />
         </Center>
       </VStack>
     </VStack>
