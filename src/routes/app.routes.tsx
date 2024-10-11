@@ -11,9 +11,9 @@ export function AppRoutes() {
   return (
     <Navigator>
       <Screen name="home" component={Home} />
-      <Screen name="exercise" component={Exercise} />
       <Screen name="history" component={History} />
       <Screen name="profile" component={Profile} />
+      <Screen name="exercise" component={Exercise} />
     </Navigator>
   )
 }
