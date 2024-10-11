@@ -1,13 +1,14 @@
 import { useState } from "react"
+import { FlatList } from "react-native"
 import { Heading, HStack, Text, VStack } from "@gluestack-ui/themed"
 
-import { HomeHeader } from "@components/HomeHeader"
 import { Group } from "@components/Group"
-import { FlatList } from "react-native"
+import { HomeHeader } from "@components/HomeHeader"
+import { ExerciseCard } from "@components/ExerciseCard"
 
 export function Home() {
-  const [groups, setGroups] = useState(["Costas", "Bíceps", "Tríceps", "Ombro"])
   const [groupSelected, setGroupSelected] = useState("Costas")
+  const [groups, setGroups] = useState(["Costas", "Bíceps", "Tríceps", "Ombro"])
   return (
     <VStack flex={1}>
       <HomeHeader />
@@ -43,6 +44,8 @@ export function Home() {
             4
           </Text>
         </HStack>
+
+        <ExerciseCard />
       </VStack>
     </VStack>
   )
