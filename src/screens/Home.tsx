@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { HStack, VStack } from "@gluestack-ui/themed"
+import { Heading, HStack, Text, VStack } from "@gluestack-ui/themed"
 
 import { HomeHeader } from "@components/HomeHeader"
 import { Group } from "@components/Group"
@@ -33,6 +33,17 @@ export function Home() {
           minHeight: 44,
         }}
       />
+
+      <VStack p="$8">
+        <HStack justifyContent="space-between" mb="$5" alignItems="center">
+          <Heading color="$gray200" fontSize="$md" fontFamily="$heading">
+            Exercícios
+          </Heading>
+          <Text color="$gray200" fontSize="$sm" fontFamily="$body">
+            4
+          </Text>
+        </HStack>
+      </VStack>
     </VStack>
   )
 }
