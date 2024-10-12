@@ -5,7 +5,6 @@ import {
   Text,
   Heading,
   ScrollView,
-  onChange,
 } from "@gluestack-ui/themed"
 import { useForm, Controller } from "react-hook-form"
 import { useNavigation } from "@react-navigation/native"
@@ -21,10 +20,14 @@ import { Button } from "@components/Button"
 export function SignUp() {
   const navigation = useNavigation<AuthNavigatorRoutesProps>()
 
-  const { control } = useForm()
+  const { control, handleSubmit } = useForm()
 
   function handleGoBack() {
     navigation.navigate("signIn")
+  }
+
+  function handleSignUp(data: any) {
+    console.log(data)
   }
   return (
     <ScrollView
@@ -65,13 +68,13 @@ export function SignUp() {
 
             <Controller
               control={control}
-              name="name"
+              name="email"
               render={({ field: { onChange, value } }) => (
                 <Input
                   placeholder="E-mail"
                   keyboardType="email-address"
                   autoCapitalize="none"
-                  onChange={onChange}
+                  onChangeText={onChange}
                   value={value}
                 />
               )}
@@ -79,12 +82,12 @@ export function SignUp() {
 
             <Controller
               control={control}
-              name="name"
+              name="password"
               render={({ field: { onChange, value } }) => (
                 <Input
                   placeholder="Senha"
                   secureTextEntry
-                  onChange={onChange}
+                  onChangeText={onChange}
                   value={value}
                 />
               )}
@@ -92,18 +95,23 @@ export function SignUp() {
 
             <Controller
               control={control}
-              name="name"
+              name="password_confirmation"
               render={({ field: { onChange, value } }) => (
                 <Input
                   placeholder="Confirme a senha"
                   secureTextEntry
-                  onChange={onChange}
+                  onChangeText={onChange}
                   value={value}
+                  onSubmitEditing={handleSubmit(handleSignUp)}
+                  returnKeyType="send"
                 />
               )}
             />
 
-            <Button title="Criar e acessar" />
+            <Button
+              title="Criar e acessar"
+              onPress={handleSubmit(handleSignUp)}
+            />
           </Center>
 
           <Button
