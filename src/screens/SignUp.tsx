@@ -15,9 +15,12 @@ import BackgroundImg from "@assets/background.png"
 
 import { Input } from "@components/Input"
 import { Button } from "@components/Button"
+import { useState } from "react"
 
 export function SignUp() {
   const navigation = useNavigation<AuthNavigatorRoutesProps>()
+
+  const [name, setName] = useState("")
 
   function handleGoBack() {
     navigation.navigate("signIn")
@@ -47,7 +50,7 @@ export function SignUp() {
           <Center gap="$2" flex={1}>
             <Heading color="$gray100">Crie sua conta</Heading>
 
-            <Input placeholder="Nome" />
+            <Input placeholder="Nome" onChangeText={setName} />
 
             <Input
               placeholder="E-mail"
