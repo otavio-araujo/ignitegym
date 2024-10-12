@@ -17,17 +17,36 @@ import BackgroundImg from "@assets/background.png"
 import { Input } from "@components/Input"
 import { Button } from "@components/Button"
 
+type FormDataProps = {
+  name: string
+  email: string
+  password: string
+  password_confirmation: string
+}
+
 export function SignUp() {
   const navigation = useNavigation<AuthNavigatorRoutesProps>()
 
-  const { control, handleSubmit } = useForm()
+  const { control, handleSubmit } = useForm<FormDataProps>({
+    defaultValues: {
+      name: "",
+      email: "",
+      password: "",
+      password_confirmation: "",
+    },
+  })
 
   function handleGoBack() {
     navigation.navigate("signIn")
   }
 
-  function handleSignUp(data: any) {
-    console.log(data)
+  function handleSignUp({
+    name,
+    email,
+    password,
+    password_confirmation,
+  }: FormDataProps) {
+    console.log(name, email, password, password_confirmation)
   }
   return (
     <ScrollView
