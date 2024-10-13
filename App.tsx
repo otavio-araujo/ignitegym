@@ -8,7 +8,7 @@ import { StatusBar } from "react-native"
 import { config } from "./config/gluestack-ui.config"
 import { GluestackUIProvider } from "@gluestack-ui/themed"
 
-import { AuthContext } from "@contexts/AuthContext"
+import { AuthContext, AuthContextProvider } from "@contexts/AuthContext"
 
 import { Routes } from "@routes/index"
 
@@ -24,18 +24,9 @@ export default function App() {
         backgroundColor="transparent"
         translucent
       />
-      <AuthContext.Provider
-        value={{
-          user: {
-            id: "1",
-            name: "Otavio Araujo",
-            email: "otavio@example.com",
-            avatar: "https://github.com/otavioaraujo.png",
-          },
-        }}
-      >
+      <AuthContextProvider>
         {fontsLoaded ? <Routes /> : <Loading />}
-      </AuthContext.Provider>
+      </AuthContextProvider>
     </GluestackUIProvider>
   )
 }
