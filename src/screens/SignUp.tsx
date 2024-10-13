@@ -52,13 +52,19 @@ export function SignUp() {
     navigation.navigate("signIn")
   }
 
-  function handleSignUp({
-    name,
-    email,
-    password,
-    password_confirmation,
-  }: FormDataProps) {
-    console.log(name, email, password, password_confirmation)
+  function handleSignUp({ name, email, password }: FormDataProps) {
+    fetch("http://192.168.0.109:3333/users", {
+      method: "POST",
+      headers: {
+        Accepted: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name,
+        email,
+        password,
+      }),
+    })
   }
   return (
     <ScrollView
