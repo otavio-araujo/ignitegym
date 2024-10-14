@@ -5,6 +5,7 @@ import { Heading, HStack, Text, useToast, VStack } from "@gluestack-ui/themed"
 
 import { api } from "@services/api"
 import { AppError } from "@utils/AppError"
+import { ExerciseDTO } from "@dtos/ExerciseDTO"
 import { AppNavigatorRoutesProps } from "@routes/app.routes"
 
 import { Group } from "@components/Group"
@@ -18,7 +19,7 @@ export function Home() {
 
   const [groupSelected, setGroupSelected] = useState<string>("")
   const [groups, setGroups] = useState<string[]>([])
-  const [exercises, setSetExercises] = useState([])
+  const [exercises, setSetExercises] = useState<ExerciseDTO[]>([])
 
   function handleExerciseDetails() {
     navigation.navigate("exercise")
@@ -28,6 +29,7 @@ export function Home() {
     try {
       const { data } = await api.get(`/exercises/bygroup/${groupSelected}`)
       setSetExercises(data)
+      console.log(data)
     } catch (error) {
       const isAppErro = error instanceof AppError
       const title = isAppErro
@@ -123,12 +125,7 @@ export function Home() {
           data={exercises}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
-            <ExerciseCard
-              name={item.name}
-              series={item.series}
-              repetitions={item.repetitions}
-              onPress={handleExerciseDetails}
-            />
+            <ExerciseCard data={item} onPress={handleExerciseDetails} />
           )}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{

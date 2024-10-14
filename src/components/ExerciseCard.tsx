@@ -9,14 +9,13 @@ import {
   Icon,
 } from "@gluestack-ui/themed"
 import { ChevronLeft } from "lucide-react-native"
+import { ExerciseDTO } from "@dtos/ExerciseDTO"
 
 type Props = TouchableOpacityProps & {
-  name: string
-  series: string
-  repetitions: string
+  data: ExerciseDTO
 }
 
-export function ExerciseCard({ name, series, repetitions, ...rest }: Props) {
+export function ExerciseCard({ data, ...rest }: Props) {
   return (
     <TouchableOpacity {...rest}>
       <HStack
@@ -40,7 +39,7 @@ export function ExerciseCard({ name, series, repetitions, ...rest }: Props) {
         />
         <VStack flex={1}>
           <Heading fontSize="$lg" color="$white" fontFamily="$heading">
-            {name}
+            {data.name}
           </Heading>
 
           <Text
@@ -49,7 +48,7 @@ export function ExerciseCard({ name, series, repetitions, ...rest }: Props) {
             fontSize="$sm"
             numberOfLines={2}
           >
-            {series} séries de {repetitions} repetições
+            {data.series} séries de {data.repetitions} repetições
           </Text>
         </VStack>
         <Icon as={ChevronLeft} color="$gray300" />
