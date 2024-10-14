@@ -6,7 +6,10 @@ import {
   storageUserRemove,
   storageUserSave,
 } from "@storage/storageUser"
-import { storageAuthTokenSave } from "@storage/storageAuthToken"
+import {
+  storageAuthTokenGet,
+  storageAuthTokenSave,
+} from "@storage/storageAuthToken"
 
 export type AuthContextDataProps = {
   user: UserDTO
@@ -71,6 +74,7 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
   async function loadUserData() {
     try {
       const currentLoggedUser = await storageUserGet()
+      const token = await storageAuthTokenGet()
 
       if (currentLoggedUser) {
         setUser(currentLoggedUser)
