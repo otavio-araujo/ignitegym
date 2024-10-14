@@ -1,3 +1,4 @@
+import { useState } from "react"
 import {
   VStack,
   Image,
@@ -19,6 +20,8 @@ import { AppError } from "@utils/AppError"
 
 import { AuthNavigatorRoutesProps } from "@routes/auth.routes"
 
+import { useAuth } from "@hooks/useAuth"
+
 import Logo from "@assets/logo.svg"
 import BackgroundImg from "@assets/background.png"
 
@@ -39,7 +42,7 @@ const signUpSchema = yup.object({
   password: yup
     .string()
     .required("Informe a senha")
-    .min(6, "A senha deve conter pelo menos 6 diúgitos"),
+    .min(6, "A senha deve conter pelo menos 6 dígitos"),
   password_confirmation: yup
     .string()
     .required("Confirme a senha")
@@ -47,6 +50,10 @@ const signUpSchema = yup.object({
 })
 
 export function SignUp() {
+  const [isLoading, setIsLoading] = useState(false)
+
+  const { signIn } = useAuth()
+
   const toast = useToast()
 
   const navigation = useNavigation<AuthNavigatorRoutesProps>()
@@ -63,12 +70,11 @@ export function SignUp() {
 
   async function handleSignUp({ name, email, password }: FormDataProps) {
     try {
-      const response = await api.post("/users", {
-        name,
-        email,
-        password,
-      })
-      console.log(response.data)
+      setIsLoading(true)
+
+      await api.post("/users", { name, email, password })
+
+      await signIn(email, password)
     } catch (error) {
       const isAppError = error instanceof AppError
 
@@ -85,6 +91,7 @@ export function SignUp() {
       })
     }
   }
+
   return (
     <ScrollView
       contentContainerStyle={{ flexGrow: 1 }}
@@ -171,6 +178,7 @@ export function SignUp() {
             <Button
               title="Criar e acessar"
               onPress={handleSubmit(handleSignUp)}
+              isLoading={isLoading}
             />
           </Center>
 
