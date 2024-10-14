@@ -20,9 +20,9 @@ export function History() {
   async function fetchHistory() {
     try {
       setIsLoading(true)
-      const { data } = await api.get("/history")
+      const response = await api.get("/history")
 
-      setExercises(data)
+      setExercises(response.data)
     } catch (error) {
       const isAppErro = error instanceof AppError
       const title = isAppErro
@@ -57,7 +57,7 @@ export function History() {
       <SectionList
         sections={exercises}
         keyExtractor={(item) => item.id}
-        renderItem={() => <HistoryCard />}
+        renderItem={({ item }) => <HistoryCard data={item} />}
         renderSectionHeader={({ section: { title } }) => (
           <Heading
             mb="$3"
