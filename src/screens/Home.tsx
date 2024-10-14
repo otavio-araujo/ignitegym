@@ -1,19 +1,23 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useNavigation } from "@react-navigation/native"
-import { FlatList, FlatListComponent } from "react-native"
-import { Heading, HStack, Text, VStack } from "@gluestack-ui/themed"
+import { FlatList } from "react-native"
+import { Heading, HStack, Text, useToast, VStack } from "@gluestack-ui/themed"
 
+import { api } from "@services/api"
+import { AppError } from "@utils/AppError"
 import { AppNavigatorRoutesProps } from "@routes/app.routes"
 
 import { Group } from "@components/Group"
 import { HomeHeader } from "@components/HomeHeader"
 import { ExerciseCard } from "@components/ExerciseCard"
+import { ToastMessage } from "@components/ToastMessage"
 
 export function Home() {
+  const toast = useToast()
   const navigation = useNavigation<AppNavigatorRoutesProps>()
 
-  const [groupSelected, setGroupSelected] = useState("Costas")
-  const [groups, setGroups] = useState(["Costas", "Bíceps", "Tríceps", "Ombro"])
+  const [groupSelected, setGroupSelected] = useState<string>("")
+  const [groups, setGroups] = useState<string[]>([])
   const [exercises, setSetExercises] = useState([
     "Puxada frontal",
     "Remada unilateral",
@@ -27,6 +31,35 @@ export function Home() {
   function handleExerciseDetails() {
     navigation.navigate("exercise")
   }
+
+  async function fetchGroups() {
+    try {
+      const { data } = await api.get("/groups")
+      setGroupSelected(data[0])
+      setGroups(data)
+    } catch (error) {
+      const isAppErro = error instanceof AppError
+      const title = isAppErro
+        ? error.message
+        : "Não foi possível carregar os grupos."
+
+      toast.show({
+        placement: "top",
+        render: ({ id }) => (
+          <ToastMessage
+            id={id}
+            title={title}
+            action="error"
+            onClose={() => toast.close(id)}
+          />
+        ),
+      })
+    }
+  }
+
+  useEffect(() => {
+    fetchGroups()
+  }, [])
   return (
     <VStack flex={1}>
       <HomeHeader />
