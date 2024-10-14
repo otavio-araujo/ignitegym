@@ -6,6 +6,7 @@ import { VStack, Heading, Text, useToast } from "@gluestack-ui/themed"
 
 import { api } from "@services/api"
 import { AppError } from "@utils/AppError"
+import { HistoryByDayDTO } from "@dtos/HistoryByDayDTO"
 
 import { HistoryCard } from "@components/HistoryCard"
 import { ScreenHeader } from "@components/ScreenHeader"
@@ -14,25 +15,14 @@ import { ToastMessage } from "@components/ToastMessage"
 export function History() {
   const toast = useToast()
   const [isLoading, setIsLoading] = useState(true)
-  const [history, setHistory] = useState([])
-
-  const [exercises, setExercises] = useState([
-    {
-      title: "10.10.24",
-      data: ["Puxada frontal", "Remada unilateral", "Remada curvada"],
-    },
-    {
-      title: "11.10.24",
-      data: ["Levantamento terra", "Agachamento", "Elevação lateral"],
-    },
-  ])
+  const [exercises, setExercises] = useState<HistoryByDayDTO[]>([])
 
   async function fetchHistory() {
     try {
       setIsLoading(true)
       const { data } = await api.get("/history")
 
-      console.log(data)
+      setExercises(data)
     } catch (error) {
       const isAppErro = error instanceof AppError
       const title = isAppErro
@@ -66,7 +56,7 @@ export function History() {
 
       <SectionList
         sections={exercises}
-        keyExtractor={(item) => item}
+        keyExtractor={(item) => item.id}
         renderItem={() => <HistoryCard />}
         renderSectionHeader={({ section: { title } }) => (
           <Heading
