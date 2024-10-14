@@ -23,8 +23,8 @@ export function Home() {
   const [groups, setGroups] = useState<string[]>([])
   const [exercises, setSetExercises] = useState<ExerciseDTO[]>([])
 
-  function handleExerciseDetails() {
-    navigation.navigate("exercise")
+  function handleExerciseDetails(exerciseId: string) {
+    navigation.navigate("exercise", { exerciseId })
   }
 
   async function fetchExercisesByGroup() {
@@ -33,7 +33,6 @@ export function Home() {
 
       const { data } = await api.get(`/exercises/bygroup/${groupSelected}`)
       setSetExercises(data)
-      console.log(data)
     } catch (error) {
       const isAppErro = error instanceof AppError
       const title = isAppErro
@@ -134,7 +133,10 @@ export function Home() {
             data={exercises}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
-              <ExerciseCard data={item} onPress={handleExerciseDetails} />
+              <ExerciseCard
+                data={item}
+                onPress={() => handleExerciseDetails(item.id)}
+              />
             )}
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{
