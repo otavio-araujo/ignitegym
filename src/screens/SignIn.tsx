@@ -6,16 +6,18 @@ import {
   Heading,
   ScrollView,
 } from "@gluestack-ui/themed"
+import { Controller, useForm } from "react-hook-form"
 import { useNavigation } from "@react-navigation/native"
 
 import { AuthNavigatorRoutesProps } from "@routes/auth.routes"
+
+import { useAuth } from "@hooks/useAuth"
 
 import Logo from "@assets/logo.svg"
 import BackgroundImg from "@assets/background.png"
 
 import { Input } from "@components/Input"
 import { Button } from "@components/Button"
-import { Controller, useForm } from "react-hook-form"
 
 type FormData = {
   email: string
@@ -24,6 +26,8 @@ type FormData = {
 
 export function SignIn() {
   const navigation = useNavigation<AuthNavigatorRoutesProps>()
+
+  const { signIn } = useAuth()
 
   const {
     control,
@@ -36,7 +40,7 @@ export function SignIn() {
   }
 
   function handleSignIn({ email, password }: FormData) {
-    console.log(email, password)
+    signIn(email, password)
   }
 
   return (

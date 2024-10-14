@@ -13,6 +13,7 @@ export function Routes() {
   theme.colors.background = gluestackUIConfig.tokens.colors.gray700
 
   const { user } = useAuth()
+  console.log(user)
 
   return (
     <Box flex={1} bg="$gray700">
