@@ -44,6 +44,7 @@ export function Exercise() {
   const toast = useToast()
 
   const [isLoading, setIsLoading] = useState(true)
+  const [submittingRegister, setSubmittingRegister] = useState(false)
   const [exerciseDetail, setExerciseDetail] = useState<ExerciseDTO>(
     {} as ExerciseDTO
   )
@@ -51,6 +52,47 @@ export function Exercise() {
   function handleGoBack() {
     setExerciseDetail({} as ExerciseDTO)
     navigation.goBack()
+  }
+
+  async function handleExerciseHistoryRegister() {
+    try {
+      setSubmittingRegister(true)
+
+      await api.post("/history", { exercise_id: exerciseId })
+
+      toast.show({
+        placement: "top",
+        render: ({ id }) => (
+          <ToastMessage
+            id={id}
+            title="Parabéns! Exercício registrado no seu histórico com sucesso."
+            action="success"
+            onClose={() => toast.close(id)}
+          />
+        ),
+      })
+
+      navigation.navigate("history")
+    } catch (error) {
+      const isAppErro = error instanceof AppError
+      const title = isAppErro
+        ? error.message
+        : "Não foi possível registrar o exercício."
+
+      toast.show({
+        placement: "top",
+        render: ({ id }) => (
+          <ToastMessage
+            id={id}
+            title={title}
+            action="error"
+            onClose={() => toast.close(id)}
+          />
+        ),
+      })
+    } finally {
+      setSubmittingRegister(false)
+    }
   }
 
   async function fetchExerciseDetails() {
@@ -153,7 +195,11 @@ export function Exercise() {
                 </HStack>
               </HStack>
 
-              <Button title="Marcar como realizado" />
+              <Button
+                title="Marcar como realizado"
+                onPress={handleExerciseHistoryRegister}
+                isLoading={submittingRegister}
+              />
             </Box>
           </VStack>
         </ScrollView>
