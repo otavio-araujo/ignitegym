@@ -11,10 +11,12 @@ import {
 import { ChevronLeft } from "lucide-react-native"
 
 type Props = TouchableOpacityProps & {
-  // title: string
+  name: string
+  series: string
+  repetitions: string
 }
 
-export function ExerciseCard({ ...rest }: Props) {
+export function ExerciseCard({ name, series, repetitions, ...rest }: Props) {
   return (
     <TouchableOpacity {...rest}>
       <HStack
@@ -38,7 +40,7 @@ export function ExerciseCard({ ...rest }: Props) {
         />
         <VStack flex={1}>
           <Heading fontSize="$lg" color="$white" fontFamily="$heading">
-            Exercício
+            {name}
           </Heading>
 
           <Text
@@ -47,7 +49,7 @@ export function ExerciseCard({ ...rest }: Props) {
             fontSize="$sm"
             numberOfLines={2}
           >
-            3 séries de 20 repetições
+            {series} séries de {repetitions} repetições
           </Text>
         </VStack>
         <Icon as={ChevronLeft} color="$gray300" />

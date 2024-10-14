@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react"
-import { useNavigation } from "@react-navigation/native"
+import { useCallback, useEffect, useState } from "react"
+import { useFocusEffect, useNavigation } from "@react-navigation/native"
 import { FlatList } from "react-native"
 import { Heading, HStack, Text, useToast, VStack } from "@gluestack-ui/themed"
 
@@ -18,18 +18,34 @@ export function Home() {
 
   const [groupSelected, setGroupSelected] = useState<string>("")
   const [groups, setGroups] = useState<string[]>([])
-  const [exercises, setSetExercises] = useState([
-    "Puxada frontal",
-    "Remada unilateral",
-    "Remada curvada",
-    "Levantamento terra",
-    "Agachamento",
-    "Elevação lateral",
-    "Elevação frontal",
-  ])
+  const [exercises, setSetExercises] = useState([])
 
   function handleExerciseDetails() {
     navigation.navigate("exercise")
+  }
+
+  async function fetchExercisesByGroup() {
+    try {
+      const { data } = await api.get(`/exercises/bygroup/${groupSelected}`)
+      setSetExercises(data)
+    } catch (error) {
+      const isAppErro = error instanceof AppError
+      const title = isAppErro
+        ? error.message
+        : "Não foi possível carregar os exercícios."
+
+      toast.show({
+        placement: "top",
+        render: ({ id }) => (
+          <ToastMessage
+            id={id}
+            title={title}
+            action="error"
+            onClose={() => toast.close(id)}
+          />
+        ),
+      })
+    }
   }
 
   async function fetchGroups() {
@@ -60,6 +76,13 @@ export function Home() {
   useEffect(() => {
     fetchGroups()
   }, [])
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchExercisesByGroup()
+    }, [groupSelected])
+  )
+
   return (
     <VStack flex={1}>
       <HomeHeader />
@@ -98,9 +121,14 @@ export function Home() {
 
         <FlatList
           data={exercises}
-          keyExtractor={(item) => item}
+          keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
-            <ExerciseCard onPress={handleExerciseDetails} />
+            <ExerciseCard
+              name={item.name}
+              series={item.series}
+              repetitions={item.repetitions}
+              onPress={handleExerciseDetails}
+            />
           )}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{
