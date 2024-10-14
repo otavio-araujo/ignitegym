@@ -12,3 +12,7 @@ export async function storageUserGet() {
   const user: UserDTO = JSON.parse(storage || "{}")
   return user
 }
+
+export async function storageUserRemove() {
+  await AsyncStorage.removeItem(USER_STORAGE)
+}
