@@ -8,6 +8,8 @@ import { Center, Heading, Text, VStack, useToast } from "@gluestack-ui/themed"
 import { yupResolver } from "@hookform/resolvers/yup"
 import * as yup from "yup"
 
+import { AppError } from "@utils/AppError"
+
 import { useAuth } from "@hooks/useAuth"
 
 import { Input } from "@components/Input"
@@ -15,6 +17,7 @@ import { Button } from "@components/Button"
 import { UserPhoto } from "@components/UserPhoto"
 import { ScreenHeader } from "@components/ScreenHeader"
 import { ToastMessage } from "@components/ToastMessage"
+import { api } from "@services/api"
 
 type FormDataProps = {
   name: string
@@ -39,11 +42,15 @@ const profileSchema = yup.object({
     .when("password", {
       is: (Field: any) => Field,
       then: (schema) =>
-        schema.nullable().required("Informe a confirmação de senha"),
+        schema
+          .nullable()
+          .required("Informe a confirmação de senha")
+          .transform((value) => (!!value ? value : null)),
     }),
 })
 
 export function Profile() {
+  const [isUpdating, setIsUpdating] = useState(false)
   const [userPhoto, setUserPhoto] = useState(
     "https://github.com/otavio-araujo.png"
   )
@@ -105,7 +112,42 @@ export function Profile() {
   }
 
   async function handleProfileUpdate(data: FormDataProps) {
-    console.log(data)
+    try {
+      setIsUpdating(true)
+
+      api.put("/users", data)
+
+      toast.show({
+        placement: "top",
+        render: ({ id }) => (
+          <ToastMessage
+            id={id}
+            title="Perfil atualizado com sucesso!"
+            action="success"
+            onClose={() => toast.close(id)}
+          />
+        ),
+      })
+    } catch (error) {
+      const isAppErro = error instanceof AppError
+      const title = isAppErro
+        ? error.message
+        : "Não foi possível atualizar os dados do usuário."
+
+      toast.show({
+        placement: "top",
+        render: ({ id }) => (
+          <ToastMessage
+            id={id}
+            title={title}
+            action="error"
+            onClose={() => toast.close(id)}
+          />
+        ),
+      })
+    } finally {
+      setIsUpdating(false)
+    }
   }
   return (
     <VStack flex={1}>
@@ -216,6 +258,7 @@ export function Profile() {
             <Button
               title="Atualizar"
               onPress={handleSubmit(handleProfileUpdate)}
+              isLoading={isUpdating}
             />
           </Center>
         </Center>
