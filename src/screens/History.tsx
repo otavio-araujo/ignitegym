@@ -11,6 +11,7 @@ import { HistoryByDayDTO } from "@dtos/HistoryByDayDTO"
 import { HistoryCard } from "@components/HistoryCard"
 import { ScreenHeader } from "@components/ScreenHeader"
 import { ToastMessage } from "@components/ToastMessage"
+import { Loading } from "@components/Loading"
 
 export function History() {
   const toast = useToast()
@@ -54,34 +55,38 @@ export function History() {
     <VStack flex={1}>
       <ScreenHeader title="Histórico de Exercícios" />
 
-      <SectionList
-        sections={exercises}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => <HistoryCard data={item} />}
-        renderSectionHeader={({ section: { title } }) => (
-          <Heading
-            mb="$3"
-            mt="$10"
-            fontSize="$md"
-            color="$gray200"
-            fontFamily="$heading"
-          >
-            {title}
-          </Heading>
-        )}
-        style={{ paddingHorizontal: 32 }}
-        contentContainerStyle={
-          exercises.length === 0
-            ? { flex: 1, justifyContent: "center" }
-            : { paddingBottom: 100 }
-        }
-        ListEmptyComponent={() => (
-          <Text color="$gray100" textAlign="center">
-            Não há exercícios registrados ainda. {"\n"}
-            Vamos fazer exercícios hoje?
-          </Text>
-        )}
-      />
+      {isLoading ? (
+        <Loading />
+      ) : (
+        <SectionList
+          sections={exercises}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => <HistoryCard data={item} />}
+          renderSectionHeader={({ section: { title } }) => (
+            <Heading
+              mb="$3"
+              mt="$10"
+              fontSize="$md"
+              color="$gray200"
+              fontFamily="$heading"
+            >
+              {title}
+            </Heading>
+          )}
+          style={{ paddingHorizontal: 32 }}
+          contentContainerStyle={
+            exercises.length === 0
+              ? { flex: 1, justifyContent: "center" }
+              : { paddingBottom: 100 }
+          }
+          ListEmptyComponent={() => (
+            <Text color="$gray100" textAlign="center">
+              Não há exercícios registrados ainda. {"\n"}
+              Vamos fazer exercícios hoje?
+            </Text>
+          )}
+        />
+      )}
     </VStack>
   )
 }
