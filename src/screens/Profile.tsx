@@ -5,6 +5,9 @@ import { Controller, useForm } from "react-hook-form"
 import { ScrollView, TouchableOpacity } from "react-native"
 import { Center, Heading, Text, VStack, useToast } from "@gluestack-ui/themed"
 
+import { yupResolver } from "@hookform/resolvers/yup"
+import * as yup from "yup"
+
 import { useAuth } from "@hooks/useAuth"
 
 import { Input } from "@components/Input"
@@ -21,6 +24,20 @@ type FormDataProps = {
   password_confirmation: string
 }
 
+const profileSchema = yup.object({
+  name: yup.string().required("Informe o nome"),
+  password: yup
+    .string()
+    .min(6, "A senha deve conter pelo menos 6 dígitos")
+    .nullable()
+    .transform((value) => (!!value ? value : null)),
+  password_confirmation: yup
+    .string()
+    .nullable()
+    .transform((value) => (!!value ? value : null))
+    .oneOf([yup.ref("password"), null], "A confirmação de senha não confere."),
+})
+
 export function Profile() {
   const [userPhoto, setUserPhoto] = useState(
     "https://github.com/otavio-araujo.png"
@@ -28,11 +45,16 @@ export function Profile() {
 
   const toast = useToast()
   const { user } = useAuth()
-  const { control, handleSubmit } = useForm<FormDataProps>({
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormDataProps>({
     defaultValues: {
       name: user.name,
       email: user.email,
     },
+    resolver: yupResolver(profileSchema),
   })
 
   async function handleUserPhotoSelect() {
@@ -114,6 +136,7 @@ export function Profile() {
                   bg="$gray600"
                   onChangeText={onChange}
                   value={value}
+                  errorMessages={errors.name?.message}
                 />
               )}
             />
@@ -166,6 +189,7 @@ export function Profile() {
                   bg="$gray600"
                   secureTextEntry
                   onChangeText={onChange}
+                  errorMessages={errors.password?.message}
                 />
               )}
             />
@@ -179,6 +203,7 @@ export function Profile() {
                   bg="$gray600"
                   secureTextEntry
                   onChangeText={onChange}
+                  errorMessages={errors.password_confirmation?.message}
                 />
               )}
             />
