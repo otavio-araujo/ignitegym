@@ -1,8 +1,11 @@
 import { useState } from "react"
 import * as FileSystem from "expo-file-system"
 import * as ImagePicker from "expo-image-picker"
+import { Controller, useForm } from "react-hook-form"
 import { ScrollView, TouchableOpacity } from "react-native"
 import { Center, Heading, Text, VStack, useToast } from "@gluestack-ui/themed"
+
+import { useAuth } from "@hooks/useAuth"
 
 import { Input } from "@components/Input"
 import { Button } from "@components/Button"
@@ -10,12 +13,27 @@ import { UserPhoto } from "@components/UserPhoto"
 import { ScreenHeader } from "@components/ScreenHeader"
 import { ToastMessage } from "@components/ToastMessage"
 
+type FormDataProps = {
+  name: string
+  email: string
+  password: string
+  old_password: string
+  password_confirmation: string
+}
+
 export function Profile() {
   const [userPhoto, setUserPhoto] = useState(
     "https://github.com/otavio-araujo.png"
   )
 
   const toast = useToast()
+  const { user } = useAuth()
+  const { control } = useForm<FormDataProps>({
+    defaultValues: {
+      name: user.name,
+      email: user.email,
+    },
+  })
 
   async function handleUserPhotoSelect() {
     try {
@@ -83,11 +101,30 @@ export function Profile() {
           </TouchableOpacity>
 
           <Center gap="$4" width="$full">
-            <Input placeholder="Otávio Araújo" bg="$gray600" />
-            <Input
-              placeholder="otavio_araujo@hotmail.com"
-              bg="$gray600"
-              isReadOnly
+            <Controller
+              control={control}
+              name="name"
+              render={({ field: { onChange, value } }) => (
+                <Input
+                  placeholder="Nome"
+                  bg="$gray600"
+                  onChangeText={onChange}
+                  value={value}
+                />
+              )}
+            />
+
+            <Controller
+              control={control}
+              name="email"
+              render={({ field: { value } }) => (
+                <Input
+                  placeholder="E-mail"
+                  bg="$gray600"
+                  value={value}
+                  isReadOnly
+                />
+              )}
             />
           </Center>
 
