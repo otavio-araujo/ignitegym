@@ -65,10 +65,31 @@ api.registerInterceptTokenManager = (signOut) => {
               const { data } = await api.post("/sessions/refresh-token", {
                 refresh_token,
               })
+
               await storageAuthTokenSave({
                 token: data.token,
                 refresh_token: data.refresh_token,
               })
+
+              if (originalRequestConfig.data) {
+                originalRequestConfig.data = JSON.parse(
+                  originalRequestConfig.data
+                )
+              }
+
+              originalRequestConfig.headers = {
+                Authorization: `Bearer ${data.token}`,
+              }
+
+              api.defaults.headers.common[
+                "Authorization"
+              ] = `Bearer ${data.token}`
+
+              failedQueue.forEach((request) => {
+                request.onSuccess(data.token)
+              })
+
+              resolve(api(originalRequestConfig))
             } catch (error) {
               failedQueue.forEach((request) => {
                 request.onFailure(error as AxiosError)
