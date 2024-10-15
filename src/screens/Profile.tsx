@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import * as FileSystem from "expo-file-system"
 import * as ImagePicker from "expo-image-picker"
 import { Controller, useForm } from "react-hook-form"
@@ -8,16 +8,18 @@ import { Center, Heading, Text, VStack, useToast } from "@gluestack-ui/themed"
 import { yupResolver } from "@hookform/resolvers/yup"
 import * as yup from "yup"
 
+import { api } from "@services/api"
 import { AppError } from "@utils/AppError"
 
 import { useAuth } from "@hooks/useAuth"
+
+import defaultUserProfileImg from "@assets/userPhotoDefault.png"
 
 import { Input } from "@components/Input"
 import { Button } from "@components/Button"
 import { UserPhoto } from "@components/UserPhoto"
 import { ScreenHeader } from "@components/ScreenHeader"
 import { ToastMessage } from "@components/ToastMessage"
-import { api } from "@services/api"
 
 type FormDataProps = {
   name: string
@@ -110,8 +112,31 @@ export function Profile() {
           name: `${user.name}.${fileExtension}`.toLowerCase().replace(" ", "-"),
           uri: photoURI,
           type: `${photoSelected.assets[0].type}/${fileExtension}`,
-        }
-        console.log(photoFile)
+        } as any
+
+        const userPhotoUploadForm = new FormData()
+        userPhotoUploadForm.append("avatar", photoFile)
+
+        await api.patch("/users/avatar", userPhotoUploadForm, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+
+        toast.show({
+          placement: "top",
+          render: ({ id }) => (
+            <ToastMessage
+              id={id}
+              title="Feito!."
+              description="Imagem do seu perfil atualizada com sucesso."
+              action="success"
+              onClose={() => toast.close(id)}
+            />
+          ),
+        })
+
+        setUserPhoto(photoURI)
       }
     } catch (error) {
       console.log(error)
@@ -161,6 +186,10 @@ export function Profile() {
       setIsUpdating(false)
     }
   }
+
+  useEffect(() => {
+    setUserPhoto(user?.avatar ? user.avatar : defaultUserProfileImg)
+  })
   return (
     <VStack flex={1}>
       <ScreenHeader title="Perfil" />
