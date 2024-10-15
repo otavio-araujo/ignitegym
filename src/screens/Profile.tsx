@@ -82,7 +82,7 @@ export function Profile() {
             </Text>
           </TouchableOpacity>
 
-          <Center gap="$4">
+          <Center gap="$4" width="$full">
             <Input placeholder="Otávio Araújo" bg="$gray600" />
             <Input
               placeholder="otavio_araujo@hotmail.com"
