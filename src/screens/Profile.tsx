@@ -56,7 +56,7 @@ export function Profile() {
   )
 
   const toast = useToast()
-  const { user } = useAuth()
+  const { user, updateUserProfile } = useAuth()
   const {
     control,
     handleSubmit,
@@ -66,7 +66,7 @@ export function Profile() {
       name: user.name,
       email: user.email,
     },
-    resolver: yupResolver(profileSchema),
+    resolver: yupResolver(profileSchema) as any,
   })
 
   async function handleUserPhotoSelect() {
@@ -115,7 +115,12 @@ export function Profile() {
     try {
       setIsUpdating(true)
 
-      api.put("/users", data)
+      const userUpdated = user
+      userUpdated.name = data.name
+
+      await api.put("/users", data)
+
+      await updateUserProfile(userUpdated)
 
       toast.show({
         placement: "top",
