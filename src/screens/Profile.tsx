@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import * as FileSystem from "expo-file-system"
 import * as ImagePicker from "expo-image-picker"
 import { Controller, useForm } from "react-hook-form"
@@ -53,10 +53,6 @@ const profileSchema = yup.object({
 
 export function Profile() {
   const [isUpdating, setIsUpdating] = useState(false)
-  const [userPhoto, setUserPhoto] = useState(
-    "https://github.com/otavio-araujo.png"
-  )
-
   const toast = useToast()
   const { user, updateUserProfile } = useAuth()
   const {
@@ -117,11 +113,20 @@ export function Profile() {
         const userPhotoUploadForm = new FormData()
         userPhotoUploadForm.append("avatar", photoFile)
 
-        await api.patch("/users/avatar", userPhotoUploadForm, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
+        const avatarUpdatedResponse = await api.patch(
+          "/users/avatar",
+          userPhotoUploadForm,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        )
+
+        const userUpdated = user
+        userUpdated.avatar = avatarUpdatedResponse.data.avatar
+
+        updateUserProfile(userUpdated)
 
         toast.show({
           placement: "top",
@@ -135,8 +140,6 @@ export function Profile() {
             />
           ),
         })
-
-        setUserPhoto(photoURI)
       }
     } catch (error) {
       console.log(error)
@@ -186,10 +189,6 @@ export function Profile() {
       setIsUpdating(false)
     }
   }
-
-  useEffect(() => {
-    setUserPhoto(user?.avatar ? user.avatar : defaultUserProfileImg)
-  })
   return (
     <VStack flex={1}>
       <ScreenHeader title="Perfil" />
@@ -197,7 +196,11 @@ export function Profile() {
       <ScrollView contentContainerStyle={{ paddingBottom: 36 }}>
         <Center mt="$6" px="$10">
           <UserPhoto
-            source={{ uri: userPhoto }}
+            source={
+              user.avatar
+                ? { uri: `${api.defaults.baseURL}/avatar/${user.avatar}` }
+                : defaultUserProfileImg
+            }
             alt="Foto do usuário"
             size="xl"
           />
