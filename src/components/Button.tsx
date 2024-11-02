@@ -19,6 +19,7 @@ export function Button({
 }: Props) {
   return (
     <GluestackButton
+      {...rest}
       w="$full"
       h="$14"
       bg={variant === "outline" ? "transparent" : "$green700"}
@@ -27,7 +28,6 @@ export function Button({
       borderRadius="$sm"
       $active-bg={variant === "outline" ? "$gray500" : "$green500"}
       disabled={isLoading}
-      {...rest}
     >
       {isLoading ? (
         <ButtonSpinner color="$white" />

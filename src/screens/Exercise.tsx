@@ -12,11 +12,7 @@ import {
 } from "@gluestack-ui/themed"
 import { useCallback, useState } from "react"
 import { ScrollView, TouchableOpacity } from "react-native"
-import {
-  useFocusEffect,
-  useNavigation,
-  useRoute,
-} from "@react-navigation/native"
+import { useNavigation, useRoute } from "@react-navigation/native"
 
 import { ArrowLeft } from "lucide-react-native"
 

@@ -6,7 +6,6 @@ import {
   Heading,
   ScrollView,
   useToast,
-  set,
 } from "@gluestack-ui/themed"
 import { Controller, useForm } from "react-hook-form"
 import { useNavigation } from "@react-navigation/native"
