@@ -17,7 +17,7 @@ type PromisseType = {
 }
 
 const api = axios.create({
-  baseURL: "http://192.168.1.17:3333",
+  baseURL: "http://192.168.1.41:3333",
 }) as APIInstaceProps
 
 let failedQueue: PromisseType[] = []

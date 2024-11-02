@@ -22,7 +22,7 @@ import { Button } from "@components/Button"
 import { ToastMessage } from "@components/ToastMessage"
 
 import { AppError } from "@utils/AppError"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 type FormData = {
   email: string
@@ -38,6 +38,7 @@ export function SignIn() {
   const {
     control,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm<FormData>()
 
@@ -73,6 +74,11 @@ export function SignIn() {
     }
   }
 
+  useEffect(() => {
+    setValue("email", "otavio@email.com")
+    setValue("password", "123456")
+  }, [])
+
   return (
     <ScrollView
       contentContainerStyle={{ flexGrow: 1 }}
@@ -101,13 +107,14 @@ export function SignIn() {
               control={control}
               name="email"
               rules={{ required: "Informe o E-mail" }}
-              render={({ field: { onChange } }) => (
+              render={({ field: { onChange, value } }) => (
                 <Input
                   placeholder="E-mail"
                   keyboardType="email-address"
                   onChangeText={onChange}
                   errorMessages={errors.email?.message}
                   autoCapitalize="none"
+                  value={value}
                 />
               )}
             />
@@ -116,12 +123,13 @@ export function SignIn() {
               control={control}
               name="password"
               rules={{ required: "Informe a senha" }}
-              render={({ field: { onChange } }) => (
+              render={({ field: { onChange, value } }) => (
                 <Input
                   placeholder="Senha"
                   secureTextEntry
                   onChangeText={onChange}
                   errorMessages={errors.password?.message}
+                  value={value}
                 />
               )}
             />
