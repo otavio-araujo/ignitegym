@@ -12,9 +12,12 @@ import {
   storageAuthTokenSave,
 } from "@storage/storageAuthToken"
 import { ref } from "yup"
+import { formatDistanceToNow } from "date-fns"
+import { ptBR } from "date-fns/locale"
 
 export type AuthContextDataProps = {
   user: UserDTO
+  userDaysWithoutPractice: number
   isLoadingUserStorageData: boolean
   signOut: () => Promise<void>
   signIn: (email: string, password: string) => Promise<void>
@@ -31,7 +34,35 @@ export const AuthContext = createContext<AuthContextDataProps>(
 
 export function AuthContextProvider({ children }: AuthContextProviderProps) {
   const [user, setUser] = useState<UserDTO>({} as UserDTO)
+  const [userDaysWithoutPractice, setUserDaysWithoutPractice] =
+    useState<number>(0)
   const [isLoadingUserStorageData, setIsLoadingUserStorageData] = useState(true)
+
+  async function getUserLastPracticeDoneAt() {
+    let lateDate: string[] | Date
+    try {
+      const { data } = await api.get("/history")
+
+      if (data.length > 0) {
+        lateDate = data[0].title.split(".").reverse() as string[]
+        lateDate = new Date(
+          Number(lateDate[0]),
+          Number(lateDate[1]),
+          Number(lateDate[2])
+        )
+
+        const distance = formatDistanceToNow(lateDate, {
+          locale: ptBR,
+        }).toString()
+
+        const daysWithoutPractice = distance.split("dias")[0]
+
+        setUserDaysWithoutPractice(Number(daysWithoutPractice))
+      }
+    } catch (error) {
+      throw error
+    }
+  }
 
   async function userAndTokenUpdate(userData: UserDTO, token: string) {
     api.defaults.headers.common["Authorization"] = `Bearer ${token}`
@@ -115,6 +146,10 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
   }, [])
 
   useEffect(() => {
+    getUserLastPracticeDoneAt()
+  }, [])
+
+  useEffect(() => {
     const subscribe = api.registerInterceptTokenManager(signOut)
 
     return () => {
@@ -125,6 +160,7 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
     <AuthContext.Provider
       value={{
         user,
+        userDaysWithoutPractice,
         signIn,
         signOut,
         isLoadingUserStorageData,

@@ -15,6 +15,9 @@ import { Routes } from "@routes/index"
 import { Loading } from "@components/Loading"
 
 import { OneSignal } from "react-native-onesignal"
+import { useEffect } from "react"
+import { tagUserDaysWithoutPractice } from "./src/notifications/notificationsTags"
+import { useAuth } from "@hooks/useAuth"
 
 OneSignal.initialize("abdf8fe7-23a0-4eea-96a0-3653a01a8c23")
 OneSignal.Notifications.requestPermission(true)

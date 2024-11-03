@@ -13,6 +13,11 @@ import { HomeHeader } from "@components/HomeHeader"
 import { ExerciseCard } from "@components/ExerciseCard"
 import { ToastMessage } from "@components/ToastMessage"
 import { Loading } from "@components/Loading"
+import { useAuth } from "@hooks/useAuth"
+import {
+  tagUserDaysWithoutPractice,
+  tagUserName,
+} from "../notifications/notificationsTags"
 
 export function Home() {
   const toast = useToast()
@@ -22,6 +27,8 @@ export function Home() {
   const [groupSelected, setGroupSelected] = useState<string>("")
   const [groups, setGroups] = useState<string[]>([])
   const [exercises, setSetExercises] = useState<ExerciseDTO[]>([])
+
+  const { userDaysWithoutPractice, user } = useAuth()
 
   function handleExerciseDetails(exerciseId: string) {
     navigation.navigate("exercise", { exerciseId })
@@ -82,6 +89,11 @@ export function Home() {
 
   useEffect(() => {
     fetchGroups()
+  }, [])
+
+  useEffect(() => {
+    tagUserDaysWithoutPractice(userDaysWithoutPractice)
+    tagUserName(user.name)
   }, [])
 
   useFocusEffect(
