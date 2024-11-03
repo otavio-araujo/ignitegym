@@ -43,6 +43,8 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
     try {
       const { data } = await api.get("/history")
 
+      console.log(data)
+
       if (data.length > 0) {
         lateDate = data[0].title.split(".").reverse() as string[]
         lateDate = new Date(
@@ -147,6 +149,10 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
 
   useEffect(() => {
     getUserLastPracticeDoneAt()
+
+    return () => {
+      getUserLastPracticeDoneAt()
+    }
   }, [])
 
   useEffect(() => {

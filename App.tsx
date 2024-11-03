@@ -14,13 +14,15 @@ import { Routes } from "@routes/index"
 
 import { Loading } from "@components/Loading"
 
-import { OneSignal } from "react-native-onesignal"
-import { useEffect } from "react"
+import {
+  NotificationWillDisplayEvent,
+  OneSignal,
+  OSNotification,
+} from "react-native-onesignal"
+import { useEffect, useState } from "react"
 import { tagUserDaysWithoutPractice } from "./src/notifications/notificationsTags"
 import { useAuth } from "@hooks/useAuth"
-
-OneSignal.initialize("abdf8fe7-23a0-4eea-96a0-3653a01a8c23")
-OneSignal.Notifications.requestPermission(true)
+import { PushNotification } from "@components/PushNotification"
 
 export default function App() {
   const [fontsLoaded] = useFonts({ Roboto_700Bold, Roboto_400Regular })
